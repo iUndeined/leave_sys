@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="lv.viewport" content="width=device-width, initial-scale=1">
+    <title>My Leave - Leave Manager</title>
+    <!-- Bootstrap core CSS -->
+    <link href="${ctxPath}/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${ctxPath}/css/dashboard.css" rel="stylesheet">
+</head>
+<body>
+	
+	<div class="container-fluid">
+		
+		<div class="row">
+			<div class="col-sm-3 col-md-2 sidebar">
+				<%include('/menu/employee.html', {'title': '我的假期'}){};%>
+			</div>
+			
+			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+				<h1>我的请假单</h1>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>单号</th>
+							<th>假单类型</th>
+							<th>请假时间</th>
+							<th>请假天数</th>
+							<th>状态</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<%for (lv in leaveL!) {%>
+							<tr>
+								<td>#${lv.id!}</td>
+								<td>${lv.type!}</td>
+								<td>${lv.start_date!, 'yyyy-MM-dd HH:mm'} to ${lv.end_date!, 'yyyy-MM-dd HH:mm'}</td>
+								<td>${lv.apply_days!}</td>
+								<td>${decode(lv.state, 0, "在途", 1, "同意", 2, "否决", "作废")}</td>
+								<td><a href="${ctxPath!}/result/${lv.id!}">查看回执</a></td>
+							</tr>
+						<%} elsefor {%>
+							<tr>
+								<td class="text-danger text-center" colspan="6">没有你的请假记录</td>
+							</tr>
+						<%}%>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	
+	<script src="${ctxPath}/js/jquery.min.js"></script>
+	<script src="${ctxPath}/js/bootstrap.min.js"></script>
+</body>
+</html>

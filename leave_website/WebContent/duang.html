@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Register - Leave Manager</title>
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/dashboard.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+    <div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-3 col-md-2 sidebar">
+				<%include('/menu/manager.html', {'title': '注册系统账号'}){};%>
+			</div>
+			
+			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+				<form class="form-signin">
+		        	<h2 class="form-signin-heading">Duang Duang, Manager Register</h2>
+				    <div class="form-group">
+				    	<label for="username">登录账号</label>
+				    	<input class="form-control" name="username" type="text" id="username" placeholder="Enter Your Username" autocomplete="off" required autofocus>
+				    </div>
+				    <div class="form-group">
+				    	<label for="nickname">账户名称</label>
+				    	<input class="form-control" name="name" type="text" id="nickname" placeholder="Enter Your Nickname" autocomplete="off" required autofocus>
+				    </div>
+			        <div class="form-group">
+			        	<label for="inputPassword">登录密码</label>
+			        	<input class="form-control" name="password" type="password" id="password1" placeholder="Enter Your Password" autocomplete="off" required>
+			        </div>
+			        <div class="form-group">
+			        	<label for="inputPassword">重复密码</label>
+			        	<input class="form-control" type="password" id="password2" placeholder="Repeat Your Password" autocomplete="off" required>
+			        </div>
+			        <div class="form-group">
+			        	<label>是系统超管吗?</label>
+			        	<div class="row">
+			        		<div class="col-md-12">
+			        			<label class="radio-inline">
+								  <input class="super" type="radio" name="super" value="0" checked> 不是
+								</label>
+								<label class="radio-inline">
+								  <input class="super" type="radio" name="super" value="1"> 是的
+								</label>
+			        		</div>
+			        	</div>
+			        </div>
+			        <div class="form-group">
+			        	<label>是人力资源管理员吗?</label>
+			        	<div class="row">
+			        		<div class="col-md-12">
+			        			<label class="radio-inline">
+								  <input class="hr" type="radio" name="hr" value="0" checked> 不是
+								</label>
+								<label class="radio-inline">
+								  <input class="hr" type="radio" name="hr" value="1"> 是的
+								</label>
+			        		</div>
+			        	</div>
+			        </div>
+		        	<button class="btn btn-lg btn-primary btn-block" type="button" id="build">创建账号</button>
+		    	</form>
+			</div>
+		</div>
+    </div> <!-- /container -->
+	
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+      <script src="js/respond.min.js"></script>
+    <![endif]-->
+    <script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('#build').on('click', function(){
+				var jUser = $('#username')
+					, jNick = $('#nickname')
+					, jPswd1 = $('#password1')
+					, jPswd2 = $('#password2')
+					, iSuper = $('.super:checked').val()
+					, iHr = $('.hr:checked').val();
+				
+				if (!jUser.val()) {
+					jUser.focus();
+					return;
+				}
+				
+				if (!jNick.val()) {
+					jNick.focus();
+					return;
+				}
+				
+				if (!jPswd1.val()) {
+					jPswd1.focus();
+					return;
+				}
+				
+				if (!jPswd2.val()) {
+					jPswd2.focus();
+					return;
+				}
+				
+				if (jPswd1.val() != jPswd2.val()) {
+					alert('两次输入密码不一致');
+					return;
+				}
+				
+				$.post('duangAct', {
+					'm.account': jUser.val()
+					, 'm.name': jNick.val()
+					, 'm.password': jPswd1.val()
+					, 'm.super': iSuper
+					, 'm.hr': iHr
+					, 'm.status': 0
+				}, function(data){
+					if (data.success) {
+						alert('创建成功！');
+						window.location.reload(true);
+					} else {
+						alert('创建失败！');
+					}
+				}, 'json');
+			});
+		});
+	</script>
+  </body>
+</html>

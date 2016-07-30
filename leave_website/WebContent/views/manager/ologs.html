@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="lv.viewport" content="width=device-width, initial-scale=1">
+    <title>Operating Logs - Leave Manager</title>
+    <!-- Bootstrap core CSS -->
+    <link href="${ctxPath}/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${ctxPath}/css/dashboard.css" rel="stylesheet">
+    <link href="${ctxPath}/css/jquery-foxibox-0.2.css" rel="stylesheet">
+    <style type="text/css">
+    	small {
+    		margin: 0 20px;
+    	}
+    </style>
+</head>
+<body>
+	
+	<div class="container-fluid">
+		
+		<div class="row">
+			<div class="col-sm-3 col-md-2 sidebar">
+				<%include('/menu/manager.html', {'title': '审批'}){};%>
+			</div>
+			
+			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+				<h1>操作日志</h1>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>单号</th>
+							<th>类型</th>
+							<th>操作人</th>
+							<th>操作内容</th>
+							<th>操作时间</th>
+						</tr>
+					</thead>
+					<tbody>
+						<%for (me in list!) {%>
+							<tr>
+								<td>#${me.id!}</td>
+								<td>${me.type!}</td>
+								<td>${me.man!}</td>
+								<td>${me.content!}</td>
+								<td>${me.created_date!}</td>
+							</tr>
+						<%} elsefor {%>
+							<tr>
+								<td class="text-danger text-center" colspan="5">该系统还未进行过一丝一毫的操作！</td>
+							</tr>
+						<%}%>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	
+	<script src="${ctxPath}/js/jquery.min.js"></script>
+	<script src="${ctxPath}/js/bootstrap.min.js"></script>
+</body>
+</html>

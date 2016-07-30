@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="lv.viewport" content="width=device-width, initial-scale=1">
+    <title>Process - Leave Manager</title>
+    <!-- Bootstrap core CSS -->
+    <link href="${ctxPath}/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${ctxPath}/css/dashboard.css" rel="stylesheet">
+    <style type="text/css">
+    	small {
+    		margin: 0 20px;
+    	}
+    </style>
+</head>
+<body>
+	
+	<div class="container-fluid">
+		
+		<div class="row">
+			<div class="col-sm-3 col-md-2 sidebar">
+				<%include('/menu/manager.html', {'title': '流程管理'}){};%>
+			</div>
+			
+			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+				<h1>流程管理</h1>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th></th>
+							<th>名称</th>
+							<th>添加时间</th>
+							<th><a class="btn btn-default" href="javascript:;" role="button" id="show-modal">添加流程</a></th>
+						</tr>
+					</thead>
+					<tbody>
+						<%for (p in proL!) {%>
+							<tr>
+								<td>#${pLP.index!}</td>
+								<td>${p.name!}</td>
+								<td>${p.created_date!}</td>
+								<td>
+									<a class="btn btn-primary display-modal" href="javascript:;" role="button" data-id="${p.id!}">查看流程</a>
+								</td>
+							</tr>
+						<%} elsefor {%>
+							<tr>
+								<td class="text-danger text-center" colspan="4">未定义流程</td>
+							</tr>
+						<%}%>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal fade" id="process-modal" tabindex="-1" role="dialog" aria-labelledby="processModalLabel">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title" id="processModalLabel">添加审批流程</h4>
+	      </div>
+	      <div class="modal-body">
+	        <form id="modal-form">
+	        	<div class="form-group">
+				    <label class="control-label" for="mp-name">流程名称</label>
+				    <input class="form-control" id="mp-name" type="text" placeholder="请给您的流程命名" autocomplete="off">
+				</div>
+	        </form>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-info" id="insert">添加审批人</button>
+	        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	        <button type="button" class="btn btn-primary" id="gun">保存</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	
+	<div class="modal fade" id="d-modal" tabindex="-1" role="dialog" aria-labelledby="processModalLabel">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title" id="processModalLabel">流程明细窗口</h4>
+	      </div>
+	      <div class="modal-body">
+	        <form id="display-form">
+	        </form>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	
+	<script id="template" type="text/x-jsrender">
+		<div class="form-group dym">
+		    <label class="control-label" for="pro1">第{{:current}}位审批人</label>
+		    <select class="form-control processes-man-sel" autocomplete="off">
+		    	<option value="" selected>请选择一位审批人</option>
+		    	<%for (m in managerL!) {%>
+		    		<option value="${m.id!}">${m.name!}</option>
+		    	<%}%>
+			</select>
+		</div>
+	</script>
+	
+	<script id="template-display" type="text/x-jsrender">
+		{{* i = 1;}}
+		{{for list}}
+			<div class="form-group">
+			    <label class="control-label">第{{*:i}}审批人</label>
+			    <p>{{>name}}</p>
+			</div>
+			{{* i += 1;}}
+		{{/for}}
+	</script>
+	
+	<script src="${ctxPath}/js/jquery.min.js"></script>
+	<script src="${ctxPath}/js/bootstrap.min.js"></script>
+	<script src="${ctxPath}/js/jsrender.min.js"></script>
+	<script type="text/javascript">
+		var form = $('#modal-form');
+	
+		function initFormArgs(){
+			window.current = 1;
+		}
+	
+		function insert(){
+			var html = $('#template').render(window);
+			form.append(html);
+			window.current ++;
+		}
+		
+		$(function(){
+			$.views.settings.allowCode= true;
+			// 检查 重复
+			form.on('change', 'select', function(e){
+				var val = this.value;
+				if (val) {
+					var ex = $('select option[value="' + val + '"]:selected');
+					if (ex.length == 2) {
+						// 回档
+						this.value = '';
+						alert('审批者不允许重复选择！');
+					}
+				}
+			});
+			
+			// 显示窗口
+			$('#show-modal').on('click', function(e){
+				// 删除之前
+				$('.dym').remove();
+				// 添加一条
+				initFormArgs();
+				insert();
+				// 显示窗口
+				$('#process-modal').modal('show');
+			});
+			
+			$('.display-modal').on('click', function(){
+				var id = this.getAttribute('data-id');
+				$.get('${ctxPath!}/processes/handleManJson', {
+					'id': id,
+					'_': $.now()
+				}, function(list){
+					var html = $('#template-display').render({'list': list});
+					$('#display-form').html(html);
+					$('#d-modal').modal('show');
+				}, 'json');
+			});
+			
+			$('#gun').on('click', function(e){
+				var jname = $('#mp-name'), 
+					vname = jname.val();
+				
+				if (!vname) {
+					alert('请命名');
+					jname.focus();
+					return;
+				}
+				
+				var json = [];
+				
+				$('.dym').each(function(){
+					var jsel = $('.processes-man-sel option:selected', this),
+						vsel = jsel.val();
+					
+					if (!vsel) {
+						return true;
+					}
+					
+					json.push({'manager_id': vsel, 'manager_name': jsel.text()});
+				});
+				
+				if (!json.length) {
+					alert('没有选择审批人，无法添加流程');
+					return;
+				}
+				
+				$.post('${ctxPath}/processes/save', {
+					'name': vname,
+					'json': JSON.stringify(json),
+					'_': $.now()
+				}, function(data){
+					
+					data = eval('(' + data + ')');
+					
+					alert(data.message);
+					
+					if (data.success) {
+						window.location.reload(true);
+					}
+					
+				}, 'text');
+			});
+			
+			$('#insert').on('click', insert);
+		});
+	</script>
+</body>
+</html>

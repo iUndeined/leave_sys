@@ -1,0 +1,17 @@
+# 开发模式
+devMode=false
+
+# 认证信息
+token=KqVB8EYfq6Tts6j335pkelCTv47DJD
+encodingAesKey=qmFwc4e2IDHbuO4a7Fg8DaDwuTnRWVMrUZbUJD9QJ2G
+
+# 应用及权限账号信息
+appId=2
+corpId=wx2ada17b67d5375da
+secret=r8GnRFqkadcr1xeogt74Hs770Z-DoatqifMPL759YcCml0Ek9mwEQ4MXB9kYQ_xc
+
+# 域名类信息
+domain=http://116.239.24.10/
+
+# 菜单类信息
+createMenu=true

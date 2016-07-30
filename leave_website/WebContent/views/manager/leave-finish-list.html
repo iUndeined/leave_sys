@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="lv.viewport" content="width=device-width, initial-scale=1">
+    <title>Leave - Leave Manager</title>
+    <!-- Bootstrap core CSS -->
+    <link href="${ctxPath}/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${ctxPath}/css/dashboard.css" rel="stylesheet">
+    <style type="text/css">
+    	#out-btn {
+    		font-size: 20px;
+    		margin-bottom: 10px;
+    		margin-top: 20px;
+    	}
+    </style>
+</head>
+<body>
+	
+	<div class="container-fluid">
+		
+		<div class="row">
+			<div class="col-sm-3 col-md-2 sidebar">
+				<%include('/menu/manager.html', {'title': '假单管理'}){};%>
+			</div>
+			
+			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+				<div class="row">
+					<div class="col-sm-3">
+						<h1>已批结假单管理</h1>
+					</div>
+					<div class="col-sm-9">
+						<form id="out-form" action="leaveOut" method="post" target="_blank">
+							<input id="leaves" name="leaves" type="hidden" />
+							<input id="out-btn" type="button" value="Excel导出勾选项" />
+						</form>
+					</div>
+					<div class="col-sm-12 col-condition" style="margin: 15px 0;">
+						<form class="form-inline" method="post">
+							<input type="hidden" name="s" value="${state!}" />
+							<div class="form-group">
+							    <input class="form-control" type="text" placeholder="开始时间" value="${ds!}" name="ds" id="ds" onfocus="WdatePicker({maxDate:'#F{$dp.$D(\'de\')||\'${date(), 'yyyy-MM-dd'}\'}'})">
+							</div>
+							<div class="form-group">
+							    <input class="form-control" type="text" placeholder="截止时间" value="${de!}" name="de" id="de" onfocus="WdatePicker({minDate:'#F{$dp.$D(\'ds\')}', maxDate:'2020-10-01'})">
+							</div>
+							<button class="btn btn-primary" type="submit">检索</button>
+							<button class="btn btn-info" type="button" id="clear">清空</button>
+						</form>
+					</div>
+				</div>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>
+								<input id="out-all" type="checkbox" checked/>
+							</th>
+							<th>单号</th>
+							<th>申请人员</th>
+							<th>假单类型</th>
+							<th>请假时间</th>
+							<th>请假天数</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<%for (lv in leaveL!) {%>
+							<tr>
+								<td><input class="out-one" type="checkbox" value="${lv.id!}" checked/></td>
+								<td>#${lv.id!}</td>
+								<td>${lv.apply_man!}</td>
+								<td>${lv.type!}</td>
+								<td>${lv.start_date!, 'yyyy-MM-dd HH:mm'} to ${lv.end_date!, 'yyyy-MM-dd HH:mm'}</td>
+								<td>${lv.apply_days!}</td>
+								<td><a href="${ctxPath!}/result/${lv.id!}-1">作废</a></td>
+							</tr>
+						<%} elsefor {%>
+							<tr>
+								<td class="text-danger text-center" colspan="6">没有你的请假记录</td>
+							</tr>
+						<%}%>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	
+	<script src="${ctxPath}/js/jquery.min.js"></script>
+	<script src="${ctxPath}/js/bootstrap.min.js"></script>
+	<script src="${ctxPath}/js/My97DatePicker/WdatePicker.js"></script>
+	<script type="text/javascript">
+		function chk(j, flag){
+			j.prop({'checked': flag});
+			initOuts();
+		}
+		
+		function initOuts(){
+			var checks = [];
+			$('.out-one:checked').each(function(){
+				checks.push(parseInt(this.value));
+			});
+			$('#leaves').val(JSON.stringify(checks));
+		}
+		
+		$(function(){
+			var all = $('#out-all'),
+				items = $('.out-one');
+			
+			all.on('change', function(e){
+				chk(items, this.checked);
+			});
+			
+			items.on('change item-linkage', function(){
+				chk(all, items.filter(':not(:checked)').length == 0);
+			});
+			
+			$('#out-btn').on('click', function(){
+				var checks = items.filter(':checked');
+				if (checks.length == 0) {
+					alert('必须勾选一条请假记录才能导出！！！');
+					return;
+				}
+				// 提交 表单
+				$('#out-form').submit();
+			});
+			
+			$('#clear').on('click', function(){
+				window.location.href = 'leaveManage';
+			});
+			
+			initOuts();
+		});
+	</script>
+</body>
+</html>

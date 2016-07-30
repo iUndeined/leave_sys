@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="lv.viewport" content="width=device-width, initial-scale=1">
+    <title>Account Manage - Leave Manager</title>
+    <!-- Bootstrap core CSS -->
+    <link href="${ctxPath}/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${ctxPath}/css/dashboard.css" rel="stylesheet">
+</head>
+<body>
+	
+	<div class="container-fluid">
+		
+		<div class="row">
+			<div class="col-sm-3 col-md-2 sidebar">
+				<%include('/menu/manager.html', {'title': has(title) ? title : '假期信息管理'}){};%>
+			</div>
+			
+			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+				<div class="row">
+					<h1 class="col-sm-6">员工列表</h1>
+					<div class="col-sm-4 col-condition">
+						<form class="form-inline">
+							<input type="hidden" name="title" value="每月调整" />
+							<%if (has(redirectUrl)) {%>
+							<input type="hidden" name="redirectUrl" value="${redirectUrl!}" />
+							<%}%>
+							<div class="form-group">
+							    <input type="text" class="form-control" id="search-name" name="name" value="${name!}" placeholder="根据名称查找">
+							</div>
+							<button type="submit" class="btn btn-primary">检索</button>
+							<button id="clear" class="btn btn-info">清空</button>
+						</form>
+					</div>
+				</div>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>工号</th>
+							<th>姓名</th>
+							<th>部门</th>
+							<th>职位</th>
+							<th>当年年假</th>
+							<th>当年调休</th>
+							<th>剩余年假</th>
+							<th>剩余调休</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<%for (e in emplL!) {%>
+							<tr>
+								<td>${e.employ_no}</td>
+								<td>${e.name!}</td>
+								<td>${e.dept!}</td>
+								<td>${e.desig!}</td>
+								<td>${e.ba.curr_year_apply_al!'0'}</td>
+								<td>${e.ba.curr_year_apply_lil!'0'}</td>
+								<td>${e.ba.curr_rest_al!'0'}</td>
+								<td>${e.ba.curr_rest_lil!'0'}</td>
+								<td>
+									<a href="<%if (has(redirectUrl)) {%>${ctxPath!}/balance/${redirectUrl!}/${e.id!}<%} else {%>${ctxPath!}/balance/manager/${e.id!}<%}%>">管理</a>
+								</td>
+							</tr>
+						<%} elsefor {%>
+							<tr>
+								<td class="text-danger text-center" colspan="5">啊哦，系统没添加员工</td>
+							</tr>
+						<%}%>
+					</tbody>
+				</table>
+				<%
+					include("/common/pagination.html", {
+						currentPage: emplPage.pageNumber,
+						totalPage: emplPage.totalPage,
+						actionUrl: ctxPath + '/' + 'balance/list'
+					}){};
+				%>
+			</div>
+		</div>
+	</div>
+	
+	<script src="${ctxPath}/js/jquery.min.js"></script>
+	<script src="${ctxPath}/js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('#clear').on('click', function(){
+				$('#search-name').val('');
+				$('form')[0].submit();
+			});
+		});
+	</script>
+</body>
+</html>

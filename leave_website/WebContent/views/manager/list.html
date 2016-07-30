@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="lv.viewport" content="width=device-width, initial-scale=1">
+    <title>Process - Leave Manager</title>
+    <!-- Bootstrap core CSS -->
+    <link href="${ctxPath}/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${ctxPath}/css/dashboard.css" rel="stylesheet">
+    <link href="${ctxPath}/css/jquery-foxibox-0.2.css" rel="stylesheet">
+    <style type="text/css">
+    	small {
+    		margin: 0 20px;
+    	}
+    </style>
+</head>
+<body>
+	
+	<div class="container-fluid">
+		
+		<div class="row">
+			<div class="col-sm-3 col-md-2 sidebar">
+				<%include('/menu/manager.html', {'title': '审批'}){};%>
+			</div>
+			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+				<div class="row">
+					<h1 class="col-sm-12">
+						<%if (isEmpty(state) || !state) {%>待处理<%} else {%>已处理<%}%>请假单
+						<small><a href="${ctxPath!}/list<%if (isEmpty(state) || !state) {%>?s=true<%}%>">查看<%if (isEmpty(state) || !state) {%>已处理<%} else {%>未处理<%}%></a></small>
+					</h1>
+					<div class="col-sm-12 col-condition" style="margin: 15px 0;">
+						<form class="form-inline" method="post">
+							<input type="hidden" name="s" value="${state!}" />
+							<div class="form-group">
+							    <input class="form-control" type="text" placeholder="根据工号查找" value="${n!}" name="n">
+							</div>
+							<div class="form-group">
+							    <input class="form-control" type="text" placeholder="开始时间" value="${ds!}" name="ds" id="ds" onfocus="WdatePicker({maxDate:'#F{$dp.$D(\'de\')||\'${date(), 'yyyy-MM-dd'}\'}'})">
+							</div>
+							<div class="form-group">
+							    <input class="form-control" type="text" placeholder="截止时间" value="${de!}" name="de" id="de" onfocus="WdatePicker({minDate:'#F{$dp.$D(\'ds\')}', maxDate:'2020-10-01'})">
+							</div>
+							<button class="btn btn-primary" type="submit">检索</button>
+							<button class="btn btn-info" type="button" id="clear">清空</button>
+						</form>
+					</div>
+				</div>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>单号</th>
+							<th>工号</th>
+							<th>请假人</th>
+							<th>部门</th>
+							<th>请假天数</th>
+							<th>请假时段</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<%for (lv in leaveL!) {%>
+							<tr>
+								<td>#${lv.id!}</td>
+								<td>${lv.employ_no!}</td>
+								<td>${lv.apply_man!}</td>
+								<td>${lv.apply_dept!}</td>
+								<td>${lv.apply_days!}</td>
+								<td width="300px">${lv.start_date!, 'yyyy-MM-dd HH:mm'} to ${lv.end_date!, 'yyyy-MM-dd HH:mm'}</td>
+								<td>
+									<button class="btn btn-primary handle" id="btn-handle-${lv.id!}" type="button" data-result='${lv.result!}' data-json='${lv.json!}'><%if (isEmpty(state) || !state) {%>处理<%} else {%>查看<%}%></button>
+								</td>
+							</tr>
+						<%} elsefor {%>
+							<tr>
+								<td class="text-danger text-center" colspan="7">并没有人申请假期，您放心吧</td>
+							</tr>
+						<%}%>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal fade" id="process-modal" tabindex="-1" role="dialog" aria-labelledby="processModalLabel">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title" id="processModalLabel">审批请假单</h4>
+	      </div>
+	      <div class="modal-body">
+	        <form>
+	        	<div class="form-group">
+				    <label class="control-label">工号</label>
+				    <p class="form-control-static" id="employ_no"></p>
+				</div>
+	        	<div class="form-group">
+				    <label class="control-label">请假人</label>
+				    <p class="form-control-static" id="apply_man"></p>
+				</div>
+				<div class="form-group">
+				    <label class="control-label">假种</label>
+				    <p class="form-control-static" id="type"></p>
+				</div>
+				<!-- 
+				<div class="form-group">
+				    <label class="control-label">MTD</label>
+				    <p class="form-control-static" id="mtd"></p>
+				</div>
+				<div class="form-group">
+				    <label class="control-label">YTD</label>
+				    <p class="form-control-static" id="ytd"></p>
+				</div>
+				 -->
+				<div class="form-group">
+				    <label class="control-label">申报时间</label>
+				    <p class="form-control-static" id="created_date"></p>
+				</div>
+	        	<div class="form-group">
+				    <label class="control-label">申请天数</label>
+				    <p class="form-control-static" id="apply_days"></p>
+				</div>
+				<div class="form-group">
+				    <label class="control-label">申请时间</label>
+				    <p class="form-control-static" id="apply_ranges"></p>
+				</div>
+				<div class="form-group">
+				    <label class="control-label">请假事由</label>
+				    <p class="form-control-static" id="reason"></p>
+				</div>
+				<div class="form-group">
+				    <label class="control-label">请假凭证</label>
+				    <p class="form-control-static" id="scrip"></p>
+				</div>
+	        	<div class="form-group hehe">
+	        		<label class="control-label">审批意见</label>
+	        		<div class="row">
+	        			<div class="col-md-12">
+		        			<label class="radio-inline">
+						  		<input class="lv-state" type="radio" name="lv.state" value="1" autocomplete="off" checked>
+						  		同意
+							</label>
+							<label class="radio-inline">
+						    	<input class="lv-state" type="radio" name="lv.state" value="2" autocomplete="off">
+						    	不同意
+							</label>
+	        			</div>
+	        		</div>
+	        	</div>
+	        	<div class="form-group hehe">
+	            	<label for="suggestion" class="control-label">审批回复</label>
+	            	<textarea class="form-control" name="lv.suggestion" id="lv-suggestion" autocomplete="off">同意</textarea>
+	        	</div>
+	        </form>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	        <button type="button" class="btn btn-primary" id="gun">处理</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	
+	<script src="${ctxPath}/js/jquery.min.js"></script>
+	<script src="${ctxPath}/js/jquery-migrate.js"></script>
+	<script src="${ctxPath}/js/bootstrap.min.js"></script>
+	<script src="${ctxPath}/js/jquery-foxibox-0.2.js"></script>
+	<script src="${ctxPath}/js/My97DatePicker/WdatePicker.js"></script>
+	<script type="text/javascript">
+		var w = window
+			, id = null
+			, state = ${state!false}
+			, mailView = ${mailView!false};
+		
+		$(function(){
+			
+			// 并没有处理按钮
+			if (state) {
+				$('#gun').remove();
+			}
+			
+			$('#clear').on('click', function(){
+				var state = '${state!}',
+					str;
+				if (state) {
+					str = '?s=true';
+				}
+				window.location.href = 'list' + str;
+			});
+			
+			$('.handle').on('click view-modal', function(e){
+				var json = this.getAttribute('data-json'),
+					datas = eval('(' + json + ')');
+				// 获取 id
+				id = datas.id;
+				
+				$.each(datas, function(key){
+					var content = this;
+					if (content) {
+						if (key == 'scrip') {
+							var url = '${ctxPath}/upload/' + content;
+							content = $('<a href="' + url + '" rel="scrip" onclick="return false;"><img class="img-rounded" src="' + url + '" width="72" height="72" alt="Leave Scrip"></a>');
+							content.foxibox();
+						}
+					} else {
+						content = '无';
+					}
+					$('#' + key).html(content);
+				});
+				
+				var result = this.getAttribute('data-result');
+				if (result) {
+					result = eval('(' + result + ')');
+					datas.state = result.state == 2 ? 1 : 2;
+					datas.suggestion = result.suggestion;
+				}
+				
+				if (state) {
+					// 选中
+					$('.lv-state[value="' + datas.state + '"]').prop('checked', true);
+					// 审批意见
+					$('#lv-suggestion').val(datas.suggestion);
+				}
+				
+				// 时间区间
+				$('#apply_ranges').html(datas.start_date + ' to ' + datas.end_date);
+				
+				$('#process-modal').modal('show');
+			});
+			
+			// 触发 显示事件
+			if (mailView) {
+				var mailViewTarget = $('#btn-handle-' + mailView);
+				if (mailViewTarget.length) {
+					mailViewTarget.trigger('view-modal');
+				} else {
+					alert('该假单已处理过了');
+				}
+			}
+			
+			$('#gun').on('click', function(e){
+				var state = $('.lv-state:checked').val(),
+					suggestion = $('#lv-suggestion').val();
+				
+				$.ajax({
+					'url': 'gun'
+					, 'type': 'post'
+					, 'data': {
+						'lv.id': id
+						, 'lv.state': state
+						, 'suggestion': suggestion
+						, '_': $.now()
+					}
+					, 'error': function(){
+						console.log(arguments);	
+					}
+					, 'success': function(data){
+						data = eval('(' + data + ')');
+						alert(data.message);
+						if (data.success) {
+							w.location.reload(true);
+						}
+					}
+				});
+			});
+		});
+	</script>
+</body>
+</html>

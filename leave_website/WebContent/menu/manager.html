@@ -1,0 +1,64 @@
+<%
+	var menus = {
+		commons: [
+			{'href': ctxPath, 'text': '登录'},
+			{'href': ctxPath + '/list', 'text': '审批'},
+			{'href': ctxPath + '/mail', 'text': '设置邮箱'}
+		],
+		hrs: [
+			{'href': ctxPath + '/balance/list?redirectUrl=monthUpgrade&title=每月调整', 'text': '每月调整'},
+			{'href': ctxPath + '/balance/uploadSp', 'text': '每月调整上传'},
+			{'href': ctxPath + '/leaveManage', 'text': '假单管理'},
+			{'href': ctxPath + '/balance/list', 'text': '假期信息管理'},
+			{'href': ctxPath + '/balance/upload', 'text': '上传人资信息'}
+		],
+		supers: [
+			{'href': ctxPath + '/logs', 'text': '操作日志'},
+			{'href': ctxPath + '/upload', 'text': '上传账号'},
+			{'href': ctxPath + '/employee', 'text': '账号管理'},
+			{'href': ctxPath + '/processes', 'text': '流程管理'},
+			{'href': ctxPath + '/duang', 'text': '注册系统账号'}
+		],
+		empls: [
+//			{'href': ctxPath + '/employee/managerApplyAccount', 'text': '绑定账户'}
+		]
+	};
+%>
+
+<ul class="nav nav-sidebar">
+	<%for (i in menus.commons!) {%>
+    <li <%if (title == i.text) print('class="active"');%>><a href="${i.href!}">${i.text!}</a></li>
+    <%}%>
+</ul>
+
+<%if (current_manager.hr == 1) {%>
+<ul class="nav nav-sidebar">
+	<%for (i in menus.hrs!) {%>
+    <li <%if (title == i.text) print('class="active"');%>><a href="${i.href!}">${i.text!}</a></li>
+    <%}%>
+</ul>
+<%}%>
+
+<%if (current_manager.super == 1) {%>
+<ul class="nav nav-sidebar">
+	<%for (i in menus.supers!) {%>
+    <li <%if (title == i.text) print('class="active"');%>><a href="${i.href!}">${i.text!}</a></li>
+    <%}%>
+</ul>
+<%}%>
+
+<ul class="nav nav-sidebar">
+	<%for (i in menus.empls!) {%>
+    <li <%if (title == i.text) print('class="active"');%>><a href="${i.href!}">${i.text!}</a></li>
+    <%}%>
+</ul>
+
+<ul class="nav nav-sidebar">
+	<%if (current_connect_empl) {%>
+	<li><a href="${ctxPath!}/employee/profile">进入个人账户</a></li>
+	<%} else {%>
+    <li <%if (title == 'connect') print('class="active"');%>><a href="${ctxPath!}/employee/connect">绑定个人账户</a></li>
+    <%}%>
+    <li><a href="${ctxPath!}/updateManagerPassword">修改密码</a></li>
+	<li><a href="${ctxPath!}/logout">注销登录</a></li>
+</ul>

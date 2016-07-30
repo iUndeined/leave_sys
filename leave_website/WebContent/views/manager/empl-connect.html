@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="lv.viewport" content="width=device-width, initial-scale=1">
+    <title>Employee Connect - Leave Manager</title>
+    <!-- Bootstrap core CSS -->
+    <link href="${ctxPath!}/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${ctxPath!}/css/dashboard.css" rel="stylesheet">
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-3 col-md-2 sidebar">
+				<%include('/menu/manager.html', {'title': 'connect'}){};%>
+			</div>
+			
+			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+				<h2>Manager Account connect to employee</h2>
+				<form id="apply-form" method="post">
+		            <div class="form-group">
+		              <label for="employ_no">Employee No</label>
+		              <input class="form-control" type="text" name="el.employ_no" id="employ_no" autocomplete="off">
+		            </div>
+		            <div class="form-group">
+		              <label for="password">Password</label>
+		              <input class="form-control" type="password" name="el.password" id="password" autocomplete="off">
+		            </div>
+					<button class="btn btn-primary btn-lg btn-block" type="button" id="do-connect">Do Connect</button>
+				</form>
+			</div>
+		</div>
+	</div>
+	
+	<script type="text/javascript" src="${ctxPath!}/js/jquery.min.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('#do-connect').on('click', function(e){
+				var emno = $('#employ_no').val(),
+					pswd = $('#password').val();
+				
+				if (!emno || !pswd) {
+					alert('请将信息填完整！');
+					return;
+				}
+				
+				var managerId = '${current_manager.id!}';
+				if (managerId) {
+					$.post('${ctxPath!}/employee/connectAct', {
+						'ep.employ_no': emno,
+						'ep.password': pswd,
+						'ep.manager_id': managerId
+					}, function(data){
+						if (data.success) {
+							alert('绑定成功，请重新登录！');
+							window.location.href = '${ctxPath!}/logout';
+						} else {
+							alert('绑定失败，不存在的个人账号！');
+						}
+					}, 'json');
+				} else {
+					alert('没有获取到管理员信息，有毒！');
+				}
+			});
+		});
+	</script>
+</body>
+</html>

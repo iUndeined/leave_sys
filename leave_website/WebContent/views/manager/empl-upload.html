@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Employees Upload - Leave Manager</title>
+    <!-- Bootstrap core CSS -->
+    <link href="${ctxPath!}/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${ctxPath!}/css/dashboard.css" rel="stylesheet">
+    
+    <style type="text/css">
+    	.table {
+    		margin-top: 1em;
+    	}
+    </style>
+  </head>
+
+  <body>
+
+    <div class="container-fluid">
+		
+		<div class="row">
+			<div class="col-sm-3 col-md-2 sidebar">
+				<%include('/menu/manager.html', {'title': '上传账号'}){};%>
+			</div>
+			
+			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+				<h2>员工资料批量上传Excel版</h2>
+				<form class="form-inline" id="upload-form" action="${ctxPath!}/upload_read" method="post" enctype="multipart/form-data">
+				  <div class="form-group">
+				    <label for="upload-excel">Excel: </label>
+				    <input class="form-control" name="excel" type="file" id="upload-excel" accept=".xls*" placeholder="请选择文件" autocomplete="off">
+				  </div>
+				  <%if (has(isome) && isome) {%>
+				  	<input class="btn btn-primary" type="button" id="btn-upload" value="我确认了，上传吧" />
+				  <%}%>
+				</form>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>工号</th>
+							<th>姓名</th>
+							<th>密码</th>
+							<th>部门</th>
+							<th>职位</th>
+						</tr>
+					</thead>
+					<tbody>
+						<%for (e in emplL!) {%>
+							<tr>
+								<td>${e.employ_no}</td>
+								<td>${e.name!}</td>
+								<td>${e.password!}</td>
+								<td>${e.dept!}</td>
+								<td>${e.desig!}</td>
+							</tr>
+						<%} elsefor {%>
+							<tr>
+								<td class="text-danger text-center" colspan="5">啊哦，读不出来噢</td>
+							</tr>
+						<%}%>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		
+    </div> <!-- /container -->
+	
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+      <script src="js/respond.min.js"></script>
+    <![endif]-->
+    <script src="${ctxPath!}/js/jquery.min.js"></script>
+	<script src="${ctxPath!}/js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('#upload-excel').on('change', function(e){
+				var val = this.value;
+				if (val) {
+					$('#upload-form').submit();
+				}
+			});
+			
+			$('#btn-upload').on('click', function(e){
+				$.post('${ctxPath!}/upload_act', {'_': $.now()}, function(result){
+					result = eval('(' + result + ')');
+					// 弹出消息
+					alert(result.message);
+					// 成功则刷新
+					if (result.success) {
+						window.location.href = '${ctxPath!}/upload';
+					}					
+				}, 'text');
+			});
+		});
+	</script>
+  </body>
+</html>

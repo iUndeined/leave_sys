@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="yxl_leave_website">
+        <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/system"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/commons"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/leave"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/employee"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/processes"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/balance"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/wechat"/>
+        <property name="context-root" value="yxl_leave_website"/>
+        <property name="java-output-path" value="/yxl_leave_website/build/classes"/>
+    </wb-module>
+</project-modules>

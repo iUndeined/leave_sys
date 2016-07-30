@@ -1,0 +1,25 @@
+<%
+	var menus = {
+		commons: [
+			{'href': ctxPath, 'text': '登录'},
+			{'href': ctxPath + '/mailEmpl', 'text': '绑定邮箱'},
+			{'href': ctxPath + '/employee/profile', 'text': '我的资料'},
+			{'href': ctxPath + '/leave_list', 'text': '我的假期'},
+			{'href': ctxPath + '/applyToken', 'text': '申请假期'}
+		]
+	};
+%>
+
+<ul class="nav nav-sidebar">
+	<%for (i in menus.commons!) {%>
+    <li <%if (title == i.text) print('class="active"');%>><a href="${i.href!}">${i.text!}</a></li>
+    <%}%>
+</ul>
+
+<ul class="nav nav-sidebar">
+	<%if (current_connect_empl) {%>
+	<li><a href="${ctxPath!}/list">返回管理账户</a></li>
+	<%}%>
+	<li><a href="${ctxPath!}/employee/updateMyPassword">修改密码</a></li>
+	<li><a href="${ctxPath!}/logout">注销登录</a></li>
+</ul>

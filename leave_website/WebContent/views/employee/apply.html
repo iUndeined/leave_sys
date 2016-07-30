@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="lv.viewport" content="width=device-width, initial-scale=1">
+    <title>Apply - Leave Manager</title>
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/dashboard.css" rel="stylesheet">
+    
+    <style type="text/css">
+    	form .row {
+    		margin-bottom: 10px;
+    	}
+    	
+    	form .row > .help-block {
+    		margin-left: 15px;
+    	}
+    	
+    	form .row > .help-first {
+    		height: 60px;
+    	}
+    </style>
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="hidden-sm col-md-2 sidebar">
+				<%include('/menu/employee.html', {'title': '申请假期'}){};%>
+			</div>
+			
+			<div class="col-sm-12 col-md-10 col-md-offset-2 main">
+				<h2>Leave Apply Form</h2>
+				<form id="apply-form" action="applyConfirm" method="post" enctype="multipart/form-data">
+					<input name="lv.employ_id" type="hidden" value="${currentEmpl.id!}"/>
+					<input name="lv.ytd" type="hidden" value="${balance.curr_rest_al!'0'}"/>
+					<input name="lv.mtd" type="hidden" value="${balance.curr_rest_al!'0'}"/>
+					<%if (has(processesId)) {%>
+					<input name="lv.processes_id" type="hidden" value="${processesId!}"/>
+					<%} else {%>
+					<div class="form-group">
+		              <label for="name">审批流程</label>
+		              <select class="form-control select select-primary select-lg" name="lv.processes_id" data-toggle="select">
+			          	<%for (p in proL!) {%>
+			          		<option value="${p.id!}">${p.name!}</option>
+			          	<%} elsefor {%>
+			          		<option value="">系统还没有添加流程</option>
+			          	<%}%>
+			          </select>
+		            </div>
+		            <%}%>
+		            <div class="row">
+		            	<div class="col-md-3">
+			              <label for="employ_no">工号</label>
+			              <input class="form-control" type="text" name="lv.employ_no" id="employ_no" placeholder="申请人工号" value="${crt.employ_no!}" readOnly>
+			            </div>
+			            <div class="col-md-3">
+			              <label for="name">姓名</label>
+			              <input type="hidden" name="lv.apply_man_id" value="${crt.id!}" />
+			              <input class="form-control" type="text" name="lv.apply_man" id="name" placeholder="申请人姓名" value="${crt.name!}" readOnly>
+			            </div>
+			            <div class="col-md-3">
+			              <label for="dept">部门</label>
+			              <input class="form-control" type="text" name="lv.apply_dept" id="dept" placeholder="申请人部门" value="${crt.dept!}" readOnly>
+			            </div>
+			            <div class="col-md-3">
+			              <label for="designation">职位</label>
+			              <input class="form-control" type="text" name="lv.designation" id="designation" placeholder="申请人职位" value="${crt.desig!}" readOnly>
+			            </div>
+		            </div>
+		            <div class="form-group">
+			          <label for="leave_type">选择假种</label>
+		              <select class="form-control select select-primary select-lg" name="lv.type" id="type" data-toggle="select">
+			            <option value="事假" selected>事假</option>
+			            <option value="年假">年假</option> 
+						<option value="病假" need-scrip>病假</option>
+		 				<option value="调休">调休</option>
+		 				<option value="婚假" need-scrip>婚假</option>
+		 				<option value="产假" need-scrip>产假</option>
+						<option value="丧假" need-scrip>丧假</option>
+						<option value="公假">公假</option>
+						<option value="工伤" need-scrip>工伤</option>
+			          </select>
+			        </div>
+			        <div class="row">
+			        	<div class="col-md-6">
+			        		<label for="start_date">开始日期</label>
+		              		<input class="form-control date date-start" type="text" placeholder="请选择" id="start_date" name="lv.start_date" readOnly="readOnly" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'});" value="${date(), 'yyyy-MM-dd'} 8:30:00">
+			        	</div>
+			        	<div class="col-md-6">
+				        	<label for="end_date">结束日期</label>
+			            	<input class="form-control date date-end" type="text" placeholder="请选择" id="end_date" name="lv.end_date" readOnly="readOnly" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss', minDate:'#F{$dp.$D(\'start_date\', {H:0.5})}'});" value="${date(), 'yyyy-MM-dd'} 17:00:00">
+			            </div>
+			        </div>
+		            <div class="row">
+			        	<div class="col-md-6">
+			        		<label for="apply_days">申请天数</label>
+			        		<input type="hidden" name="lv.apply_days" id="apply_days_hidden" value="1" />
+		              		<input class="form-control" id="apply_days" type="number" id="apply_days" placeholder="天" value="1">
+			        	</div>
+			        	<div class="col-md-6">
+				        	<label for="end_date">申请小时</label>
+			            	<input class="form-control" id="apply_hours" type="number" placeholder="小时" value="0">
+			            </div>
+			            
+			            <div class="help-first"></div>
+			            <div class="help-block">申请天数和申请小时请勿重复填写。</div>
+					    <div class="help-block">若申请时间小于一天，直接填写申请小时，申请天数为0。E.G 若请假2小时，申请天数写0，申请小时写2</div>
+					    <div class="help-block">若申请时间大于一天，直接填写申请天数，申请小时为0。E.G 若请1.5天，申请天数写1.5，申请小时写0</div>
+			        </div>
+		            <div class="form-group">
+		              <label for="scrip">凭证</label>
+		              <input class="form-control" type="file" name="scrip" id="scrip" accept=".jpg,.jpeg,.bmp,.png" placeholder="上传凭证">
+		            </div>
+		            <div class="form-group">
+		            	<label for="reason">请假事由</label>
+		            	<textarea class="form-control" id="reason" name="lv.reason" rows="3" placeholder="说说你请假的原因，通过的概率会更大噢"></textarea>
+		            </div>
+		            <!-- 令牌 -->
+		            <input name="token" type="hidden" value="${token!}" />
+					<button class="btn btn-primary btn-lg btn-block" type="button" id="do-apply">递交</button>
+				</form>
+			</div>
+		</div>
+	</div>
+	
+	<script type="text/javascript" src="js/My97DatePicker/WdatePicker.js"></script>
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript">
+		$(onInit);
+		
+		var hasFile = false
+			, freeLeave = -1
+			, restLil = -1
+			, currentSelected = 'No Pay Leave'
+			, actionBtn = $('#do-apply');
+		
+		function onInit(){
+			var currentDate = new Date(),
+				tDay = 1000 * 60 * 60 * 24;
+			
+			actionBtn.on('click', function(e){
+				var selected = $('#type option:selected')
+					, type = selected.val()
+					, needScrip = selected.is('[need-scrip]')
+					, isAl = type == '年假'
+					, isLil = type == '调休';
+				
+				if (isAl || isLil) {
+					var apply = parseFloat($('#apply_days').val());
+					if (apply > freeLeave && isAl) {
+						alert('你没有那么多年假可请！');
+						return;
+					}
+					if (apply > restLil && isLil) {
+						alert('你没有那么多调休可请！');
+						return;
+					}
+				}
+				
+				if (needScrip && !hasFile) {
+					alert('必须提交凭证');
+					return;
+				}
+				
+				var applyHours = parseInt($('#apply_hours').val())
+					, applyDays = parseFloat($('#apply_days').val());
+				
+				/* 
+				if (isNaN(applyDays) || applyDays <= 0) {
+					alert('不正确的申请天数');
+					return;
+				}
+				
+				if (isNaN(applyHours) || applyHours < 0) {
+					alert('不正确的申请小时数');
+					return;
+				}
+				 */
+				 
+				if (applyHours > 0) {
+					applyDays += applyHours * 0.1;
+				}
+				
+				// 设置 隐藏值
+				$('#apply_days_hidden').val(applyDays);
+				// 直接提交
+				$('#apply-form').submit();
+			});
+			
+			$('#type').on('change select-leave-way', function(e){
+				var selfFirst = $('option:eq(0)', this),
+					selected = currentSelected = $('option:selected', this).val();
+				// 年假
+				if (selected == '年假') {
+					// 禁用提交按钮
+					actionBtn.attr('disabled', 'disabled');
+					
+					$.get('${ctxPath!}/balance/findFreeLeave/${crt.id!}', function(total){
+						freeLeave = total;
+						if (total == 0) {
+							alert('哦噢，你没有年假噢！');
+							selfFirst.prop('selected', true);
+						} else {
+							alert('你还有' + total + '天年假！');
+						}
+						
+						actionBtn.removeAttr('disabled');
+					}, 'json');
+					
+//					onDatePicked();
+				}
+				
+				if (selected == '调休') {
+					// 禁用提交按钮
+					actionBtn.attr('disabled', 'disabled');
+					
+					$.get('${ctxPath!}/balance/findRestLil/${crt.id!}', function(total){
+						restLil = total;
+						if (total == 0) {
+							alert('哦噢，你没有调休噢！');
+							selfFirst.prop('selected', true);
+						} else {
+							alert('你还有' + total + '天调休！');
+						}
+						
+						actionBtn.removeAttr('disabled');
+					}, 'json');
+					
+//					onDatePicked();
+				}
+			})
+			// 开始执行一次
+			.trigger('select-leave-way');
+			
+//			$('.time-range').on('change', onDatePicked);
+			
+			$('#scrip').on('change', function(e){
+				hasFile = (this.value) ? true : false;
+			});
+			
+			// 加载 凭证上传框
+			initScripControl();
+		}
+		
+		function initScripControl(){
+			$("#scrip").change(function(){
+                var self = $(this),
+                	filepath = self.val(),
+                	extStart = filepath.lastIndexOf("."),
+                	ext = filepath.substring(extStart, filepath.length).toUpperCase();
+                if (ext != ".BMP" && ext != ".PNG" && ext != ".GIF" && ext != ".JPG" && ext != ".JPEG") {
+                    alert("只能选图片格式！！");
+                    self.val('');
+                    return false;
+                }
+                return true;
+            });
+		}
+		
+		function onDatePicked(){
+			var self = $(this)
+				, start = $('#start_date')
+				, end = $('#end_date')
+				, startVal = start.val()
+				, endVal = end.val()
+				, range = 1
+//				, startRange = $('#start_last option:selected').val()
+//				, endRange = $('#end_last option:selected').val()
+				, applyDays = $('#apply_days')
+				, jsDateStart = new Date(startVal.replace(/-/g, '/'))
+				, jsDateEnd = new Date(endVal.replace(/-/g, '/'))
+				, jsTimeStart = jsDateStart.getTime()
+				, jsTimeEnd = jsDateEnd.getTime()
+				, jsRest = jsTimeEnd - jsTimeStart;
+			
+			//计算出相差天数
+			var days = Math.floor(jsRest/(24*3600*1000));
+			//计算出小时数
+			var leave1 = jsRest % (24*3600*1000);    // 计算天数后剩余的毫秒数
+			var hours = Math.floor(leave1/(3600*1000)) * 0.1;
+			//计算相差分钟数
+			var leave2 = leave1 % (3600*1000);        // 计算小时数后剩余的毫秒数
+			var minutes = (leave2 / (1000 * 60 * 60)) * 0.1;
+			
+			if (minutes == 0.4) {
+				minutes += 0.1;
+			}
+			
+			if (minutes == 0.8) {
+				minutes = 0;
+				days ++;
+			}
+			
+			var realApplys = days + hours + minutes;
+			var min = 0.05,
+				text = '半小时';
+			
+			if (currentSelected == '年假' ||
+				currentSelected == '调休') {
+				min = 0.5;
+				text = '半天';
+			}
+			
+			if (realApplys < min) {
+				realApplys = 0;
+				alert('请假时间不能少于' + text);
+				end.val('').focus();
+			}
+			
+			// 计算 修正
+			if (realApplys < 1) {
+				realApplys -= 0.05;
+			}
+			
+			// 进位
+			if ((realApplys % 1) >= 0.8) {
+				realApplys = parseInt(realApplys) + 1;
+			}
+			
+			// 赋值
+			applyDays.val(realApplys.toFixed(2));
+		}
+		
+		Date.prototype.pattern = function(fmt) {           
+		    var o = {           
+		    "M+" : this.getMonth()+1, //月份           
+		    "d+" : this.getDate(), //日           
+		    "h+" : this.getHours()%12 == 0 ? 12 : this.getHours()%12, //小时           
+		    "H+" : this.getHours(), //小时           
+		    "m+" : this.getMinutes(), //分           
+		    "s+" : this.getSeconds(), //秒           
+		    "q+" : Math.floor((this.getMonth()+3)/3), //季度           
+		    "S" : this.getMilliseconds() //毫秒           
+		    };           
+		    var week = {           
+		    "0" : "/u65e5",           
+		    "1" : "/u4e00",           
+		    "2" : "/u4e8c",           
+		    "3" : "/u4e09",           
+		    "4" : "/u56db",           
+		    "5" : "/u4e94",           
+		    "6" : "/u516d"          
+		    };           
+		    if(/(y+)/.test(fmt)){           
+		        fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));           
+		    }           
+		    if(/(E+)/.test(fmt)){           
+		        fmt=fmt.replace(RegExp.$1, ((RegExp.$1.length>1) ? (RegExp.$1.length>2 ? "/u661f/u671f" : "/u5468") : "")+week[this.getDay()+""]);           
+		    }           
+		    for(var k in o){           
+		        if(new RegExp("("+ k +")").test(fmt)){           
+		            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));           
+		        }           
+		    }           
+		    return fmt;           
+		}
+	</script>
+</body>
+</html>

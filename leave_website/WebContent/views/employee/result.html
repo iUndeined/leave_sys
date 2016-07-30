@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="lv.viewport" content="width=device-width, initial-scale=1">
+    <title>Result - Leave Manager</title>
+    <!-- Bootstrap core CSS -->
+    <link href="${ctxPath}/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${ctxPath}/css/dashboard.css" rel="stylesheet">
+</head>
+<body>
+	
+	<div class="container-fluid">
+		
+		<div class="row">
+			<div class="hidden-sm col-md-2 sidebar">
+				<%if (cancel == true) {
+				include('/menu/manager.html', {'title': '假单管理'}){};
+				} else {
+				include('/menu/employee.html', {'title': '我的假期'}){};
+				}%>
+			</div>
+			
+			<div class="col-sm-12 col-md-10 col-md-offset-2 main">
+				<h1>结果</h1>
+				
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>审批人</th>
+							<th>状态</th>
+							<th>时间</th>
+							<th>意见</th>
+						</tr>
+					</thead>
+					<tbody>
+						<%var cancelEmpl = true;%>
+						<%for (r in res!) {%>
+						<%
+							if (r.state > 1) {
+								cancelEmpl = false;
+							}
+						%>
+						<tr>
+							<td>${r.manager_name!}</td>
+							<td>${decode(r.state, 0, "在途", 1, "待处理", 2, "同意", 3, "否决", "终止")}</td>
+							<td>${r.reply_date!"无"}</td>
+							<td>${r.suggestion!"无"}</td>
+						</tr>
+						<%}%>
+					</tbody>
+				</table>
+			
+				<h1>回执</h1>
+			
+				<table class="table table-bordered">
+					<tr>
+						<th>请假人</th>
+						<td>${lv.apply_man!}</td>
+						<th>部门</th>
+						<td>${lv.apply_dept!}</td>
+						<th>工号</th>
+						<td>${lv.employ_no!}</td>
+					</tr>
+					<tr>
+						<th>申请天数</th>
+						<td>${lv.apply_days!}</td>
+						<th>职位</th>
+						<td>${lv.designation!}</td>
+						<th>假种</th>
+						<td>${lv.type!}</td>
+					</tr>
+					<tr>
+						<th>申报时间</th>
+						<td>${lv.created_date!}</td>
+						<th>YTD</th>
+						<td>${lv.ytd!}</td>
+						<th>MTD</th>
+						<td>${lv.mtd!}</td>
+					</tr>
+					<tr>
+						<th>计划请假时间</th>
+						<td colspan="5">${lv.start_date!, 'yyyy-MM-dd HH:mm'} to ${lv.end_date!, 'yyyy-MM-dd HH:mm'}</td>
+					</tr>
+					<tr>
+						<th>请假事由</th>
+						<td colspan="5">${lv.reason!}</td>
+					</tr>
+					<tr>
+						<th>请假凭证</th>
+						<td colspan="5">
+							<%if (isEmpty(lv.scrip)) {%>
+								无
+							<%} else {%>
+								<img src="${ctxPath}/upload/${lv.scrip!}" alt="Leave Scrip" class="img-rounded">
+							<%}%>
+						</td>
+					</tr>
+				</table>
+				<%if (cancel == true) {%>
+				<button type="button" class="btn btn-info" id="cancel">确认作废</button>
+				<%} else {%>
+				<button type="button" class="btn btn-info" id="favorite">保存回执</button>
+				<%if (cancelEmpl && lv.state == 0) {%>
+				<button type="button" class="btn btn-warning" id="cancel-empl">取消假单</button>
+				<%}%>
+				<button type="button" class="btn btn-success" id="close">关闭回执</button>
+				<%}%>
+			</div>
+		</div>
+	</div>
+	
+	<script src="${ctxPath!}/js/jquery.min.js"></script>
+	<script src="${ctxPath!}/js/jquery-migrate.js"></script>
+	<script type="text/javascript">
+		//收藏本页代码 keleyi.com
+		$.fn.addFavorite = function(l, h) {
+			return this.click(function() {
+		 		var t = $(this);
+				if ($.browser.msie) {
+			 		window.external.addFavorite(h, l);
+			 	} else if ($.browser.mozilla || $.browser.opera) {
+					t.attr("rel", "sidebar");
+					t.attr("title", l);
+					t.attr("href", h);
+			 	} else {
+			 		alert("请使用Ctrl+D将本页加入收藏夹！");
+				}
+			});
+		};
+		
+		$(function(){
+			// 关闭 页面
+			$('#close').on('click', window.close);
+			// 加入 收藏
+			$('#favorite').addFavorite(document.title, location.href);
+			<%if (cancelEmpl) {%>
+			$('#cancel-empl').on('click', function(e){
+				if (!window.confirm('您是否确认取消该假单？')) {
+					return;
+				}
+				
+				$.post('${ctxPath!}/cancelEmpl/${lv.id!}', function(result){
+					alert('取消' + (result.success ? '成功' : '失败'));
+					if (result.success) {
+						window.location.href = '${ctxPath!}/leave_list';
+					}
+				}, 'json');
+			});
+			<%}%>
+			<%if (cancel) {%>
+			$('#cancel').on('click', function(e){
+				if (!window.confirm('您是否确认作废该假单？')) {
+					return;
+				}
+				
+				$.post('${ctxPath!}/cancel/${lv.id!}', function(result){
+					alert('操作' + (result.success ? '成功' : '失败'));
+					if (result.success) {
+						window.location.href = '${ctxPath!}/leaveManage';
+					}
+				}, 'json');
+			});
+			<%}%>
+		});
+	</script>
+	
+</body>
+</html>

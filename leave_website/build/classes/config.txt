@@ -1,0 +1,31 @@
+# 地址信息
+DataBaseAddr=localhost
+DataBasePort=3306
+
+# 连接信息
+DataBaseName=yxl_leave
+DataBaseUser=root
+DataBasePassword=root
+
+# 开发模式
+devModel=false
+
+# ------ mail配置 ------ #
+
+# 邮件发送是否需要加密，一般默认 25 号端口都是不加密的
+senderIsSSL=false
+
+# 邮件内容编码统一
+senderChartset=UTF-8
+
+# 邮件发送服务器地址
+senderSmtp=smtp.139.com
+
+# 邮件发送服务器接收端口
+senderPort=25
+
+# 发送账号
+senderMail=t_j_m_001@139.com
+
+# 发送密码
+senderPswd=cjd2613187

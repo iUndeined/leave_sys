@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="lv.viewport" content="width=device-width, initial-scale=1">
+    <title>Apply Form Confirm - Leave Manager</title>
+    <!-- Bootstrap core CSS -->
+    <link href="${ctxPath}/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${ctxPath}/css/dashboard.css" rel="stylesheet">
+</head>
+<body>
+	
+	<div class="container-fluid">
+		
+		<div class="row">
+			<div class="hidden-sm col-md-2 sidebar">
+				<%include('/menu/employee.html', {'title': '申请假期'}){};%>
+			</div>
+			
+			<div class="col-sm-12 col-md-10 col-md-offset-2 main">
+				<h1>请假单确认？</h1>
+			
+				<table class="table table-bordered">
+					<tr>
+						<th>请假人</th>
+						<td>${lv.apply_man!}</td>
+						<th>部门</th>
+						<td>${lv.apply_dept!}</td>
+						<th>工号</th>
+						<td>${lv.employ_no!}</td>
+					</tr>
+					<tr>
+						<th>申请天数</th>
+						<td>${lv.apply_days!}</td>
+						<th>职位</th>
+						<td>${lv.designation!}</td>
+						<th>假种</th>
+						<td>${lv.type!}</td>
+					</tr>
+					<tr>
+						<th>YTD</th>
+						<td>${lv.ytd!}</td>
+						<th>MTD</th>
+						<td colspan="3">${lv.mtd!}</td>
+					</tr>
+					<tr>
+						<th>计划请假时间</th>
+						<td colspan="5">${lv.start_date!, 'yyyy-MM-dd HH:mm'} to ${lv.end_date!, 'yyyy-MM-dd HH:mm'}</td>
+					</tr>
+					<tr>
+						<th>请假事由</th>
+						<td colspan="5">${lv.reason!}</td>
+					</tr>
+					<tr>
+						<th>请假凭证</th>
+						<td colspan="5">
+							<%if (isEmpty(cacheImageName)) {%>
+								无
+							<%} else {%>
+								<img src="${ctxPath}/upload/${cacheImageName!}" alt="Leave Scrip" class="img-rounded">
+							<%}%>
+						</td>
+					</tr>
+				</table>
+				
+				<form action="applyAction">
+					<input name="token" type="hidden" value="${token!}"/>
+					<button type="submit" class="btn btn-info" id="i-confirm">确认提交</button>
+					<button type="button" class="btn btn-warning" id="i-des" onclick="window.location.href='${ctxPath!}/applyToken';">放弃重填</button>
+					<button type="button" class="btn btn-success" id="i-want-to-change" onclick="window.history.back();">返回修改</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

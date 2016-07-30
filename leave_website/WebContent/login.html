@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login - Leave Manager</title>
+    <!-- Bootstrap core CSS -->
+    <link href="${ctxPath!}/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${ctxPath!}/css/dashboard.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+    <div class="container">
+		
+		<form class="form-signin" action="${ctxPath!}/login">
+        	<h2 class="form-signin-heading">Welcome, Please sign in</h2>
+		    <div class="form-group">
+		    	<label for="inputEmail">Username</label>
+		    	<input class="form-control" name="username" type="text" id="inputEmail" placeholder="Enter Your Username" autocomplete="off" required autofocus>
+		    </div>
+	        <div class="form-group">
+	        	<label for="inputPassword">Password</label>
+	        	<input class="form-control" name="password" type="password" id="inputPassword" placeholder="Enter Your Password" autocomplete="off" required>
+	        </div>
+        	<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+    	</form>
+		
+    </div> <!-- /container -->
+	
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+      <script src="js/respond.min.js"></script>
+    <![endif]-->
+    <script src="${ctxPath!}/js/jquery.min.js"></script>
+	<script src="${ctxPath!}/js/bootstrap.min.js"></script>
+  </body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="lv.viewport" content="width=device-width, initial-scale=1">
+    <title>Balance Upgrade - Leave Manager</title>
+    <!-- Bootstrap core CSS -->
+    <link href="${ctxPath!}/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${ctxPath!}/css/dashboard.css" rel="stylesheet">
+    
+    <style type="text/css">
+    	form .row {
+    		margin-bottom: 10px;
+    	}
+    </style>
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-3 col-md-2 sidebar">
+				<%include('/menu/manager.html', {'title': '每月调整'}){};%>
+			</div>
+			
+			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+				<h2>Employee Manager Form</h2>
+				<form id="upgrade-form" action="${ctxPath!}/balance/monthUpgradeAct" method="post">
+					<div class="row">
+		            	<div class="col-md-6">
+		            		<label for="employ_no">工号</label>
+			            	<%if (!isEmpty(be.id)) {%>
+			            	<input name="be.id" type="hidden" value="${be.id!}"/>
+			            	<%}%>
+			            	<input name="be.empl_id" type="hidden" value="${el.id!}"/>
+			            	<input class="form-control" type="text" id="employ_no" name="be.empl_no" value="${el.employ_no!}" autocomplete="off" readonly="readonly">
+		            	</div>
+		            	<div class="col-md-6">
+		            		<label for="name">名称</label>
+		            		<input class="form-control" type="text" id="name" name="be.empl_name" value="${el.name!}" autocomplete="off" readonly="readonly">
+		            	</div>
+		            </div>
+		            <div class="form-group">
+		              <label for="curr_year_add_al">当年新增年假</label>
+		              <input class="form-control number" type="text" name="be.curr_year_add_al" id="curr_year_add_al" value="0" autocomplete="off" required>
+		            </div>
+		            <div class="form-group">
+		              <label for="curr_year_add_lil">当年新增调休</label>
+		              <input class="form-control number" type="text" name="be.curr_year_add_lil" id="curr_year_add_lil" value="0" autocomplete="off" required>
+		            </div>
+					<button class="btn btn-primary btn-lg btn-block" type="submit" id="do-apply">Do Submit</button>
+				</form>
+			</div>
+		</div>
+	</div>
+	
+	<script type="text/javascript" src="${ctxPath!}/js/jquery.min.js"></script>
+	<script type="text/javascript" src="${ctxPath!}/js/jquery.validate.min.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			// 添加 验证
+			$('#upgrade-form').validate();
+		});
+	</script>
+</body>
+</html>

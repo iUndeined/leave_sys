@@ -1,0 +1,119 @@
+/**
+ * name:      jquery-foxibox-0.1.css
+ * author:    Stefan Benicke - www.opusonline.at
+ * version:   0.1
+ * date:      14.08.2009
+ * category:  stylesheet for jquery-foxibox-0.1.js
+ * copyright: (c) 2009 Stefan Benicke (www.opusonline.at)
+ * license:   GNU GPLv3 <http://www.gnu.org/licenses>
+ * example:   http://www.opusonline.at/foxitools/foxibox/
+ * 
+  <div id="foxibox_overlay"></div>
+  <div id="foxibox_loader"></div>
+  <div id="foxibox_container">
+    <img id="foxibox_image" src="" />
+  </div>
+  <div id="foxibox_details">
+    <div id="foxibox_title"></div>
+    <a href="#" id="close"></a>
+    <a href="#" id="scale"></a>
+    <div id="foxibox_nav">
+      <a href="#" id="next"></a>
+      <a href="#" id="prev"></a>
+      <div></div>
+    </div>
+  </div>
+ */
+#foxibox_overlay {
+/* width, height and opacity are set in the script */
+/* position (absolute) and z-index have to be there! */
+/* opacity can be set with overlayOpacity in the options of foxibox */
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10010;
+  background: #000;
+}
+#foxibox_loader {
+/* top and left are set in he script */
+/* position (absolute) and z-index (higher than container) have to be there! */
+  position: absolute;
+  z-index: 102;
+  width: 32px;
+  height: 32px;
+  background: url(../images/foxibox-loading.gif) no-repeat;
+}
+#foxibox_container {
+/* top, left, width, height and padding are set in he script */
+/* position (absolute) and z-index (higher than overlay) have to be there! */
+/* padding can be set with borderSize in the options of foxibox */
+  position: absolute;
+  z-index: 10086;
+}
+#foxibox_details {
+/* top and left are set in he script */
+/* position (absolute) and z-index (higher than container) have to be there! */
+  position: absolute;
+  z-index: 102;
+  width: auto;
+  height: auto;
+  padding-top: 5px;
+  font: 9pt 'trebuchet ms';
+  color: #444;
+}
+#foxibox_title {
+  width: auto;
+  float: left;
+  font-weight: bold;
+}
+#foxibox_nav {
+  width: auto;
+  float: right;
+  overflow: hidden;
+}
+#foxibox_nav div {
+  width: auto;
+  float: right;
+  margin-right: 8px;
+  color: #888;
+}
+#foxibox_nav #prev {
+  display: block;
+  width: 20px;
+  height: 16px;
+  float: right;
+  background: url(../images/foxibox-arrows.gif) 0px 0px no-repeat;
+}
+#foxibox_nav #next {
+  display: block;
+  width: 20px;
+  height: 16px;
+  float: right;
+  background: url(../images/foxibox-arrows.gif) -20px 0px no-repeat;
+}
+#foxibox_details #scale {
+  display: block;
+  width: 20px;
+  height: 16px;
+  float: right;
+  background: url(../images/foxibox-arrows.gif) -60px 0px no-repeat;
+}
+#foxibox_details #close {
+  display: block;
+  width: 16px;
+  height: 16px;
+  float: right;
+  background: url(../images/foxibox-arrows.gif) -40px 0px no-repeat;
+}
+#foxibox_nav #prev:hover {
+  background-position: 0px -20px;
+}
+#foxibox_nav #next:hover {
+  background-position: -20px -20px;
+}
+#foxibox_details #scale:hover {
+  background-position: -60px -20px;
+}
+#foxibox_details #close:hover {
+  background-position: -40px -20px;
+}

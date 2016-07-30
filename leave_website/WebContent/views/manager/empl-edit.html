@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="lv.viewport" content="width=device-width, initial-scale=1">
+    <title>Employee Edit - Leave Manager</title>
+    <!-- Bootstrap core CSS -->
+    <link href="${ctxPath!}/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${ctxPath!}/css/dashboard.css" rel="stylesheet">
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-3 col-md-2 sidebar">
+				<%include('/menu/manager.html', {'title': '账号管理'}){};%>
+			</div>
+			
+			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+				<h2>Employee Manager Form</h2>
+				<form id="apply-form" action="${ctxPath!}/employee/save" method="post">
+		            <div class="form-group">
+		              <label for="employ_no">工号</label>
+		              <%if (!isEmpty(empl.id)) {%>
+		              <input name="el.id" type="hidden" value="${empl.id!}"/>
+		              <%}%>
+		              <input class="form-control" type="text" name="el.employ_no" id="employ_no" value="${empl.employ_no!}" autocomplete="off">
+		            </div>
+		            <div class="form-group">
+		              <label for="name">名字</label>
+		              <input class="form-control" type="text" name="el.name" id="name" value="${empl.name!}" autocomplete="off">
+		            </div>
+		            <div class="form-group">
+		              <label for="password">登录密码</label>
+		              <input class="form-control" type="password" name="el.password" id="password" value="${empl.password!}" autocomplete="off">
+		            </div>
+		            <div class="form-group">
+		              <label for="dept">部门</label>
+		              <input class="form-control" type="text" name="el.dept" id="dept" value="${empl.dept!}" autocomplete="off">
+		            </div>
+		            <div class="form-group">
+		              <label for="desig">职位</label>
+		              <input class="form-control" type="text" name="el.desig" id="desig" value="${empl.desig!}" autocomplete="off">
+		            </div>
+		            <div class="form-group">
+		              <label for="name">审批流程</label>
+		              <select class="form-control select select-primary select-lg" name="processes_id" data-toggle="select" autocomplete="off">
+			          	<%if (proL != null && proL.~size > 0) {%>
+			          		<option value="">请选择</option>
+			          	<%}%>
+			          	<%for (p in proL!) {%>
+			          		<option value="${p.id!}"<%if (has(currentProcesses) && currentProcesses == p.id) {%> selected="selected"<%}%>>${p.name!}</option>
+			          	<%} elsefor {%>
+			          		<option value="">系统还没有添加流程</option>
+			          	<%}%>
+			          </select>
+		            </div>
+					<button class="btn btn-primary btn-lg btn-block" type="submit" id="do-apply">Do Submit</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

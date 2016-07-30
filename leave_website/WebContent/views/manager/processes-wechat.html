@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>请假单微信审批</title>
+    <link rel="stylesheet" href="${ctxPath!}/css/weui.min.css"/>
+</head>
+<body ontouchstart>
+    <div class="container js_container">
+        <div class="page">
+            <div class="hd">
+                <h1 class="page_title">审批单</h1>
+                <p class="page_desc">假单审批微信端</p>
+            </div>
+            <div class="bd">
+            	<div class="weui_cells_title">请假人</div>
+            	<div class="weui_cells">
+                    <div class="weui_cell">
+                        <div class="weui_cell_bd weui_cell_primary">
+                            <p>${lv.apply_man!}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="weui_cells_title">假种</div>
+            	<div class="weui_cells">
+                    <div class="weui_cell">
+                        <div class="weui_cell_bd weui_cell_primary">
+                            <p>${lv.type!}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="weui_cells_title">MTD</div>
+            	<div class="weui_cells">
+                    <div class="weui_cell">
+                        <div class="weui_cell_bd weui_cell_primary">
+                            <p>${lv.mtd!}</p>
+                        </div>
+                    </div>
+                </div>
+				<div class="weui_cells_title">YTD</div>
+            	<div class="weui_cells">
+                    <div class="weui_cell">
+                        <div class="weui_cell_bd weui_cell_primary">
+                            <p>${lv.ytd!}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="weui_cells_title">申请天数</div>
+            	<div class="weui_cells">
+                    <div class="weui_cell">
+                        <div class="weui_cell_bd weui_cell_primary">
+                            <p>${lv.apply_days!}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="weui_cells_title">申请时间</div>
+            	<div class="weui_cells">
+                    <div class="weui_cell">
+                        <div class="weui_cell_bd weui_cell_primary">
+                            <p>${lv.start_date!, 'yyyy-MM-dd HH:mm'} to ${lv.end_date!, 'yyyy-MM-dd HH:mm'}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="weui_cells_title">请假事由</div>
+            	<div class="weui_cells">
+                    <div class="weui_cell">
+                        <div class="weui_cell_bd weui_cell_primary">
+                            <p>${lv.reason!}</p>
+                        </div>
+                    </div>
+                </div>
+				<div class="weui_cells_title">请假凭证</div>
+            	<div class="weui_cells">
+                    <div class="weui_cell">
+                        <div class="weui_cell_bd weui_cell_primary">
+                            <p>
+	                            <%if (isEmpty(lv.scrip)) {%>
+									无
+								<%} else {%>
+									<img src="${ctxPath}/upload/${lv.scrip!}" alt="Leave Scrip" style="width: 100%;">
+								<%}%>
+							</p>
+                        </div>
+                    </div>
+                </div>
+                <form action="${ctxPath!}/gun_wechat" method="post">
+                	<input type="hidden" name="lv.id" value="${lv.id!}" />
+                	<div class="weui_cells_title">审批意见</div>
+	            	<div class="weui_cells weui_cells_radio">
+	                    <label for="x11" class="weui_cell weui_check_label">
+	                        <div class="weui_cell_bd weui_cell_primary">
+	                            <p>同意</p>
+	                        </div>
+	                        <div class="weui_cell_ft">
+	                            <input type="radio" id="x11" name="lv.state" class="weui_check" value="1" checked="checked">
+	                            <span class="weui_icon_checked"></span>
+	                        </div>
+	                    </label>
+	                    <label for="x12" class="weui_cell weui_check_label">
+	                        <div class="weui_cell_bd weui_cell_primary">
+	                            <p>不同意</p>
+	                        </div>
+	                        <div class="weui_cell_ft">
+	                            <input type="radio" id="x12" name="lv.state" class="weui_check" value="2">
+	                            <span class="weui_icon_checked"></span>
+	                        </div>
+	                    </label>
+	                </div>
+	                <div class="weui_cells_title">审批回复</div>
+	            	<div class="weui_cells weui_cells_form">
+	                    <div class="weui_cell">
+	                        <div class="weui_cell_bd weui_cell_primary">
+	                            <textarea name="lv.reason" placeholder="您可以填写回复意见" class="weui_textarea"></textarea>
+	                        </div>
+	                    </div>
+	                </div>
+	                <div class="weui_btn_area">
+	                    <button class="weui_btn weui_btn_primary" type="submit">处理</button>
+	                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</html>

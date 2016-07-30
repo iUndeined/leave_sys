@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>已获取用户信息，正在跳转至绑定页</title>
+</head>
+<body>
+	
+	<h1>正在跳转 ...</h1>
+
+	<script src="js/jquery.min.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			var code = '${code!}';
+			if (!code) {
+				alert('未正确获取到用户信息！！');
+				return;
+			}
+			
+			var form = $('<form>', {'action': '/leave/${method!}', 'method': 'post'}),
+				fcode = $('<input>', {'type': 'hidden', 'name': 'code', 'value': code}),
+				fstate = $('<input>', {'type': 'hidden', 'name': 'state', 'value': '${state!}'});
+			
+			form.append(fcode);
+			form.append(fstate);
+			form.appendTo('body');
+			form.submit();
+		});
+	</script>
+</body>
+</html>

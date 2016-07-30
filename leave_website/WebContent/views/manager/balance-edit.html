@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="lv.viewport" content="width=device-width, initial-scale=1">
+    <title>Employee Edit - Leave Manager</title>
+    <!-- Bootstrap core CSS -->
+    <link href="${ctxPath!}/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${ctxPath!}/css/dashboard.css" rel="stylesheet">
+    
+    <style type="text/css">
+    	form .row {
+    		margin-bottom: 10px;
+    	}
+    </style>
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-3 col-md-2 sidebar">
+				<%include('/menu/manager.html', {'title': '假期信息管理'}){};%>
+			</div>
+			
+			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+				<h2>Employee Manager Form</h2>
+				<form id="balance-form" action="${ctxPath!}/balance/save" method="post">
+					<div class="row">
+		            	<div class="col-md-6">
+		            		<label for="employ_no">工号</label>
+			            	<%if (!isEmpty(be.id)) {%>
+			            	<input name="be.id" type="hidden" value="${be.id!}"/>
+			            	<%}%>
+			            	<input name="be.empl_id" type="hidden" value="${el.id!}"/>
+			            	<input class="form-control" type="text" id="employ_no" name="be.empl_no" value="${el.employ_no!}" autocomplete="off" readonly="readonly">
+		            	</div>
+		            	<div class="col-md-6">
+		            		<label for="name">名称</label>
+		            		<input class="form-control" type="text" id="name" name="be.empl_name" value="${el.name!}" autocomplete="off" readonly="readonly">
+		            	</div>
+		            </div>
+		            <div class="form-group">
+		              <label for="join_date">入职日期</label>
+		              <input name="be.join_date" id="join_date" type="hidden" value="${be.join_date!date(), 'yyyy-MM-dd'} 00:00:00"/>
+		              <input class="form-control" type="text" value="${be.join_date!date(), 'yyyy-MM-dd'}" autocomplete="off" onfocus="WdatePicker({onpicked: onpicked});">
+		            </div>
+		            <div class="form-group">
+		              <label for="after_work">入职前工龄</label>
+		              <input class="form-control number" type="text" name="be.after_work" id="after_work" value="${be.after_work!0}" autocomplete="off">
+		            </div>
+		            <div class="form-group">
+		              <label for="total_work">总工龄</label>
+		              <input class="form-control number" type="text" name="be.total_work" id="total_work" value="${be.total_work!0}" autocomplete="off">
+		            </div>
+		            <div class="form-group">
+		              <label for="last_year_rest_al">上年度剩余年假</label>
+		              <input class="form-control number" type="text" name="be.last_year_rest_al" id="last_year_rest_al" value="${be.last_year_rest_al!0}" autocomplete="off">
+		            </div>
+		            <div class="form-group">
+		              <label for="last_year_rest_lil">上年度剩余调休</label>
+		              <input class="form-control number" type="text" name="be.last_year_rest_lil" id="last_year_rest_lil" value="${be.last_year_rest_lil!0}" autocomplete="off">
+		            </div>
+		            <div class="form-group">
+		              <label for="curr_year_al_qua">本年度年假资格</label>
+		              <input class="form-control number" type="text" name="be.curr_year_al_qua" id="curr_year_al_qua" value="${be.curr_year_al_qua!0}" autocomplete="off">
+		            </div>
+		            <div class="form-group">
+		              <label for="curr_end_al">临时截止年假</label>
+		              <input class="form-control number" type="text" name="be.curr_end_al" id="curr_end_al" value="${be.curr_end_al!0}" autocomplete="off">
+		            </div>
+		            <div class="form-group">
+		              <label for="curr_end_lil">临时截止调休</label>
+		              <input class="form-control number" type="text" name="be.curr_end_lil" id="curr_end_lil" value="${be.curr_end_lil!0}" autocomplete="off">
+		            </div>
+		            <div class="form-group">
+		              <label for="curr_year_apply_al">当年已请年假</label>
+		              <input class="form-control number" type="text" name="be.curr_year_apply_al" id="curr_year_apply_al" value="${be.curr_year_apply_al!0}" autocomplete="off">
+		            </div>
+		            <div class="form-group">
+		              <label for="curr_year_apply_lil">当年已请调休</label>
+		              <input class="form-control number" type="text" name="be.curr_year_apply_lil" id="curr_year_apply_lil" value="${be.curr_year_apply_lil!0}" autocomplete="off">
+		            </div>
+		            <div class="form-group">
+		              <label for="curr_year_add_al">当年新增年假</label>
+		              <input class="form-control number" type="text" name="be.curr_year_add_al" id="curr_year_add_al" value="${be.curr_year_add_al!0}" autocomplete="off">
+		            </div>
+		            <div class="form-group">
+		              <label for="curr_year_add_lil">当年新增调休</label>
+		              <input class="form-control number" type="text" name="be.curr_year_add_lil" id="curr_year_add_lil" value="${be.curr_year_add_lil!0}" autocomplete="off">
+		            </div>
+		            <div class="form-group">
+		              <label for="curr_rest_al">当前剩余年假</label>
+		              <input class="form-control number" type="text" name="be.curr_rest_al" id="curr_rest_al" value="${be.curr_rest_al!0}" autocomplete="off" readonly="readonly">
+		            </div>
+		            <div class="form-group">
+		              <label for="curr_rest_lil">当前剩余调休</label>
+		              <input class="form-control number" type="text" name="be.curr_rest_lil" id="curr_rest_lil" value="${be.curr_rest_lil!0}" autocomplete="off" readonly="readonly">
+		            </div>
+					<button class="btn btn-primary btn-lg btn-block" type="submit" id="do-apply">Do Submit</button>
+				</form>
+			</div>
+		</div>
+	</div>
+	
+	<script type="text/javascript" src="${ctxPath!}/js/My97DatePicker/WdatePicker.js"></script>
+	<script type="text/javascript" src="${ctxPath!}/js/jquery.min.js"></script>
+	<script type="text/javascript" src="${ctxPath!}/js/jquery.validate.min.js"></script>
+	<script type="text/javascript">
+		var // 当年已请
+			applyAl = ${be.curr_year_apply_al!0}
+			// 当年已请调休
+			, applyLil = ${be.curr_year_apply_lil!0}
+			// 临时截止年假
+			, endAl = ${be.curr_end_al!0}
+			// 临时截止调休
+			, endLil = ${be.curr_end_lil!0}
+			// 当年新增年假
+			, addAl = ${be.curr_year_add_al!0}
+			// 当年新增调休
+			, addLil = ${be.curr_year_add_lil!0};
+		
+		$(function(){
+			var currRestAl = $('#curr_rest_al');
+			
+			$('#curr_end_al').on('keyup', function(){
+				endAl = parseN(this.value);
+				currRestAl.val((addAl + endAl) - applyAl);
+			});
+			
+			$('#curr_year_add_al').on('keyup', function(){
+				addAl = parseN(this.value);
+				currRestAl.val((addAl + endAl) - applyAl);
+			});
+			
+			$('#curr_year_apply_al').on('keyup', function(){
+				applyAl = parseN(this.value);
+				currRestAl.val((addAl + endAl) - applyAl);
+			});
+			
+			var currRestLil = $('#curr_rest_lil');
+			
+			$('#curr_end_lil').on('keyup', function(){
+				endLil = parseN(this.value);
+				currRestLil.val((addLil + endLil) - applyLil);
+			});
+			
+			$('#curr_year_add_lil').on('keyup', function(){
+				addLil = parseN(this.value);
+				currRestLil.val((addLil + endLil) - applyLil);
+			});
+			
+			$('#curr_year_apply_lil').on('keyup', function(){
+				applyLil = parseN(this.value);
+				currRestLil.val((addLil + endLil) - applyLil);
+			});
+			
+			// 加载 验证
+			$('#balance-form').validate();
+		});
+		
+		function parseN(number){
+			if (!number || isNaN(number)) {
+				return 0;
+			}
+			return parseFloat(number);
+		}
+		
+		function onpicked(dp){
+			var before = dp.cal.getDateStr(),
+				after = ' 00:00:00';
+			$('#join_date').val(before + after);
+		}
+	</script>
+</body>
+</html>

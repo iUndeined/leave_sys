@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="lv.viewport" content="width=device-width, initial-scale=1">
+    <title>My Leave - Leave Manager</title>
+    <!-- Bootstrap core CSS -->
+    <link href="${ctxPath}/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${ctxPath}/css/dashboard.css" rel="stylesheet">
+</head>
+<body>
+	
+	<div class="container-fluid">
+		
+		<div class="row">
+			<div class="hidden-sm col-md-2 sidebar">
+				<%include('/menu/employee.html', {'title': '我的资料'}){};%>
+			</div>
+			
+			<div class="col-sm-12 col-md-10 col-md-offset-2 main">
+				<h3>我的工号</h3>
+				<p class="text-danger">${el.employ_no!}</p>
+				<h3>我的姓名</h3>
+				<p class="text-info">${el.name!}</p>
+				<h3>我的部门</h3>
+				<p class="text-danger">${el.dept!"无"}</p>
+				<h3>我的职位</h3>
+				<p class="text-danger">${el.desig!"无"}</p>
+				<h3>我已请的年假</h3>
+				<p class="text-danger">${be.curr_year_apply_al!0}</p>
+				<h3>我已请的调休</h3>
+				<p class="text-danger">${be.curr_year_apply_lil!0}</p>
+				<h3>我的剩余年假</h3>
+				<p class="text-danger">${be.curr_rest_al!0}</p>
+				<h3>我的剩余调休</h3>
+				<p class="text-danger">${be.curr_rest_lil!0}</p>
+				<%if (isEmpty(wechat)) {%>
+				<h3>我的微信(<span class="text-danger">请使用微信扫码绑定</span>)</h3>
+				<p class="text-danger" id="wechat"></p>
+				<%} else {%>
+				<h3>我的微信</h3>
+				<p class="text-danger">已绑定</p>
+				<%}%>
+			</div>
+		</div>
+	</div>
+	
+	<script src="${ctxPath}/js/jquery.min.js"></script>
+	<script src="${ctxPath}/js/bootstrap.min.js"></script>
+	<script src="${ctxPath}/js/jquery.qrcode.min.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			var // 这两句是要改的
+				appId = 'wx2ada17b67d5375da'
+				, domain = '116.239.24.10'
+				// 下面这两行不用动
+				, uri = encodeURIComponent('http://' + domain + '/leave_wechat/getUserId')
+				, url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + appId + '&redirect_uri=' + uri + '&response_type=code&scope=snsapi_base&state=${el.id!0}#wechat_redirect';
+			
+			console.log(url);
+				
+			// 转换 二维码
+			$('#wechat').qrcode({
+				'width': 333,
+				'height': 333,
+				'text': url
+			});
+		});
+	</script>
+</body>
+</html>
